@@ -32,7 +32,7 @@ jobs:
       #     go get example.com/octo-examplemodule@v1.3.4
       
       - name: Install dependencies
-        run: go get .
+        run: go install .
       - name: Build
         run: go build -v ./...
       - name: Test with the Go CLI
