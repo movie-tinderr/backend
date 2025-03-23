@@ -1,0 +1,42 @@
+services:
+  # Сервис для Go-приложения
+  app:
+    build: .  # Используем Dockerfile для сборки
+    container_name: my-go-app-container
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: testuser
+      DB_PASSWORD: testpassword
+      DB_NAME: users
+    depends_on:
+      - db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - my-network
+
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:latest
+    container_name: my-postgres-container
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpassword
+      POSTGRES_DB: users
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql  # Монтируем init.sql
+    networks:
+      - my-network
+
+volumes:
+  db_data:
+
+networks:
+  my-network:
+    driver: bridge
